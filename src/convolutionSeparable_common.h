@@ -24,7 +24,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Reference CPU convolution
 ////////////////////////////////////////////////////////////////////////////////
-extern "C" void convolutionRowCPU(
+extern "C" void convolution2dRowCPU(
     float *h_Dst,
     float *h_Src,
     float *h_Kernel,
@@ -33,7 +33,7 @@ extern "C" void convolutionRowCPU(
     int kernelR
 );
 
-extern "C" void convolutionColumnCPU(
+extern "C" void convolution2dColumnCPU(
     float *h_Dst,
     float *h_Src,
     float *h_Kernel,
@@ -42,6 +42,35 @@ extern "C" void convolutionColumnCPU(
     int kernelR
 );
 
+extern "C" void convolution3dRowCPU(
+    float *h_Dst,
+    float *h_Src,
+    float *h_Kernel,
+    int imageW,
+    int imageH,
+    int imageD,
+    int kernelR
+);
+
+extern "C" void convolution3dColumnCPU(
+    float *h_Dst,
+    float *h_Src,
+    float *h_Kernel,
+    int imageW,
+    int imageH,
+    int imageD,
+    int kernelR
+);
+
+extern "C" void convolution3dDepthCPU(
+    float *h_Dst,
+    float *h_Src,
+    float *h_Kernel,
+    int imageW,
+    int imageH,
+    int imageD,
+    int kernelR
+);
 
 
 ////////////////////////////////////////////////////////////////////////////////
