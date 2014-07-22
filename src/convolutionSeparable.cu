@@ -46,7 +46,7 @@ extern "C" void setConvolutionKernel(float *h_Kernel)
 // larger or equal to the kernel radius to work
 #define   ROWS_HALO_STEPS 1
 
-__global__ void convolutionRowsKernel(
+__global__ void convolution2dRowsKernel(
     float *d_Dst,
     float *d_Src,
     int imageW,
@@ -125,7 +125,7 @@ __global__ void convolutionRowsKernel(
     }
 }
 
-extern "C" void convolutionRowsGPU(
+extern "C" void convolution2dRowsGPU(
     float *d_Dst,
     float *d_Src,
     int imageW,
@@ -139,7 +139,7 @@ extern "C" void convolutionRowsGPU(
     dim3 blocks(imageW / (ROWS_RESULT_STEPS * ROWS_BLOCKDIM_X), imageH / ROWS_BLOCKDIM_Y);
     dim3 threads(ROWS_BLOCKDIM_X, ROWS_BLOCKDIM_Y);
 
-    convolutionRowsKernel<<<blocks, threads>>>(
+    convolution2dRowsKernel<<<blocks, threads>>>(
         d_Dst,
         d_Src,
         imageW,
@@ -159,7 +159,7 @@ extern "C" void convolutionRowsGPU(
 #define COLUMNS_RESULT_STEPS 8
 #define   COLUMNS_HALO_STEPS 1
 
-__global__ void convolutionColumnsKernel(
+__global__ void convolution2dColumnsKernel(
     float *d_Dst,
     float *d_Src,
     int imageW,
@@ -217,7 +217,7 @@ __global__ void convolutionColumnsKernel(
     }
 }
 
-extern "C" void convolutionColumnsGPU(
+extern "C" void convolution2dColumnsGPU(
     float *d_Dst,
     float *d_Src,
     int imageW,
@@ -231,7 +231,7 @@ extern "C" void convolutionColumnsGPU(
     dim3 blocks(imageW / COLUMNS_BLOCKDIM_X, imageH / (COLUMNS_RESULT_STEPS * COLUMNS_BLOCKDIM_Y));
     dim3 threads(COLUMNS_BLOCKDIM_X, COLUMNS_BLOCKDIM_Y);
 
-    convolutionColumnsKernel<<<blocks, threads>>>(
+    convolution2dColumnsKernel<<<blocks, threads>>>(
         d_Dst,
         d_Src,
         imageW,

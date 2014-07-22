@@ -78,14 +78,14 @@ extern "C" void convolution3dDepthCPU(
 ////////////////////////////////////////////////////////////////////////////////
 extern "C" void setConvolutionKernel(float *h_Kernel);
 
-extern "C" void convolutionRowsGPU(
+extern "C" void convolution2dRowsGPU(
     float *d_Dst,
     float *d_Src,
     int imageW,
     int imageH
 );
 
-extern "C" void convolutionColumnsGPU(
+extern "C" void convolution2dColumnsGPU(
     float *d_Dst,
     float *d_Src,
     int imageW,

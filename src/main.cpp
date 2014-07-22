@@ -11,7 +11,7 @@
 
 /*
 * This sample implements a separable convolution filter
-* of a 2D image with an arbitrary kernel.
+* of a 2D/3D image with an arbitrary kernel.
 */
 
 // CUDA runtime
@@ -48,13 +48,6 @@ int main(int argc, char **argv)
     const int imageH = 3072;
     const int iterations = 16;
 
-    StopWatchInterface *hTimer = NULL;
-
-    //Use command-line specified CUDA device, otherwise use device with highest Gflops/s
-    findCudaDevice(argc, (const char **)argv);
-
-    sdkCreateTimer(&hTimer);
-
     printf("Image Width x Height = %i x %i\n\n", imageW, imageH);
     printf("Allocating and initializing host arrays...\n");
     h_Kernel    = (float *)malloc(KERNEL_LENGTH * sizeof(float));
@@ -73,6 +66,13 @@ int main(int argc, char **argv)
     {
         h_Input[i] = (float)(rand() % 16);
     }
+
+    StopWatchInterface *hTimer = NULL;
+
+    //Use command-line specified CUDA device, otherwise use device with highest Gflops/s
+    findCudaDevice(argc, (const char **)argv);
+
+    sdkCreateTimer(&hTimer);
 
     printf("Allocating and initializing CUDA arrays...\n");
     checkCudaErrors(cudaMalloc((void **)&d_Input,   imageW * imageH * sizeof(float)));
@@ -94,14 +94,14 @@ int main(int argc, char **argv)
             sdkStartTimer(&hTimer);
         }
 
-        convolutionRowsGPU(
+        convolution2dRowsGPU(
             d_Buffer,
             d_Input,
             imageW,
             imageH
         );
 
-        convolutionColumnsGPU(
+        convolution2dColumnsGPU(
             d_Output,
             d_Buffer,
             imageW,
