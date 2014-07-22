@@ -26,7 +26,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Reference CPU convolution
 ////////////////////////////////////////////////////////////////////////////////
-extern "C" void convolutionRowCPU(
+extern "C" void convolution2dRowCPU(
     float *h_Result,
     float *h_Data,
     float *h_Kernel,
@@ -35,7 +35,7 @@ extern "C" void convolutionRowCPU(
     int kernelR
 );
 
-extern "C" void convolutionColumnCPU(
+extern "C" void convolution2dColumnCPU(
     float *h_Result,
     float *h_Data,
     float *h_Kernel,
@@ -144,7 +144,7 @@ int main(int argc, char **argv)
 
     printf("Checking the results...\n");
     printf(" ...running convolutionRowCPU()\n");
-    convolutionRowCPU(
+    convolution2dRowCPU(
         h_Buffer,
         h_Input,
         h_Kernel,
@@ -154,7 +154,7 @@ int main(int argc, char **argv)
     );
 
     printf(" ...running convolutionColumnCPU()\n");
-    convolutionColumnCPU(
+    convolution2dColumnCPU(
         h_OutputCPU,
         h_Buffer,
         h_Kernel,
