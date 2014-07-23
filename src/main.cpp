@@ -242,14 +242,14 @@ void test3d()
             imageH,
             imageD
         );
-
+        /*
         convolution3dDepthGPU(
             d_Output,
             d_Buffer,
             imageW,
             imageH,
             imageD
-        );
+        );*/
     }
 
     checkCudaErrors(cudaDeviceSynchronize());
@@ -283,7 +283,7 @@ void test3d()
         imageD,
         KERNEL_RADIUS
     );
-
+    /*
     printf(" ...running convolution3dDepthCPU()\n");
     convolution3dDepthCPU(
         h_OutputCPU,
@@ -293,7 +293,7 @@ void test3d()
         imageH,
         imageD,
         KERNEL_RADIUS
-    );
+    );*/
 
     for ( int i = -KERNEL_RADIUS; i <= KERNEL_RADIUS; ++i )
     	printf("%i:Kernel=%.4f, CPU=%.4f, GPU=%.4f\n", i, h_Kernel[ i + KERNEL_RADIUS ], h_OutputCPU[ location + i], h_OutputGPU[ location + i]);
