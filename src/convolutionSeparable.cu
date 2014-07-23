@@ -259,7 +259,7 @@ __global__ void convolution3dRowsKernel(
 
     const int baseX = (blockIdx.x * ROWS_RESULT_STEPS - ROWS_HALO_STEPS) * ROWS_BLOCKDIM_X + threadIdx.x;
     const int baseY = blockIdx.y * ROWS_BLOCKDIM_Y + threadIdx.y;
-    const int baseZ = blockIdx.z + threadIdx.y;
+    const int baseZ = blockIdx.z + threadIdx.z;
 
     // set the input and output arrays to the right offset (actually the output is not at the right offset, but this is corrected later)
     d_Src += baseZ * pitchY * pitchX + baseY * pitchX + baseX;
@@ -352,7 +352,7 @@ __global__ void convolution3dColumnsKernel(
     //Offset to the upper halo edge
     const int baseX = blockIdx.x * COLUMNS_BLOCKDIM_X + threadIdx.x;
     const int baseY = (blockIdx.y * COLUMNS_RESULT_STEPS - COLUMNS_HALO_STEPS) * COLUMNS_BLOCKDIM_Y + threadIdx.y;
-    const int baseZ = blockIdx.z + threadIdx.y;
+    const int baseZ = blockIdx.z + threadIdx.z;
 
     d_Src += baseZ * pitchY * pitchX + baseY * pitchX + baseX;
     d_Dst += baseZ * pitchY * pitchX + baseY * pitchX + baseX;
