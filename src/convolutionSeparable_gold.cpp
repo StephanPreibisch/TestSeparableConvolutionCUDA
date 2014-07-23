@@ -95,10 +95,10 @@ extern "C" void convolution3dRowCPU(
 					int d = x + k;
 
 					if (d >= 0 && d < imageW)
-						sum += h_Src[z * (imageW+imageH) + y * imageW + d] * h_Kernel[kernelR - k];
+						sum += h_Src[z * imageW * imageH + y * imageW + d] * h_Kernel[kernelR - k];
 				}
 
-				h_Dst[z * (imageW+imageH) + y * imageW + x] = sum;
+				h_Dst[z * imageW * imageH + y * imageW + x] = sum;
 			}
 }
 
@@ -123,10 +123,10 @@ extern "C" void convolution3dColumnCPU(
 					int d = y + k;
 
 					if (d >= 0 && d < imageH)
-						sum += h_Src[z * (imageW+imageH) + d * imageW + x] * h_Kernel[kernelR - k];
+						sum += h_Src[z * imageW * imageH + d * imageW + x] * h_Kernel[kernelR - k];
 				}
 
-				h_Dst[z * (imageW+imageH) + y * imageW + x] = sum;
+				h_Dst[z * imageW * imageH + y * imageW + x] = sum;
 			}
 }
 
@@ -151,9 +151,9 @@ extern "C" void convolution3dDepthCPU(
 					int d = z + k;
 
 					if (d >= 0 && d < imageD)
-						sum += h_Src[d * (imageW+imageH) + y * imageW + x] * h_Kernel[kernelR - k];
+						sum += h_Src[d * imageW * imageH + y * imageW + x] * h_Kernel[kernelR - k];
 				}
 
-				h_Dst[z * (imageW+imageH) + y * imageW + x] = sum;
+				h_Dst[z * imageW * imageH + y * imageW + x] = sum;
 			}
 }
