@@ -46,6 +46,16 @@ extern "C" void setConvolutionKernel(float *h_Kernel)
 // larger or equal to the kernel radius to work
 #define   ROWS_HALO_STEPS 1
 
+#define   COLUMNS_BLOCKDIM_X 16
+#define   COLUMNS_BLOCKDIM_Y 16
+#define COLUMNS_RESULT_STEPS 8
+#define   COLUMNS_HALO_STEPS 1
+
+#define   DEPTH_BLOCKDIM_X 16
+#define   DEPTH_BLOCKDIM_Z 16
+#define DEPTH_RESULT_STEPS 8
+#define   DEPTH_HALO_STEPS 1
+
 __global__ void convolution2dRowsKernel(
     float *d_Dst,
     float *d_Src,
@@ -154,11 +164,6 @@ extern "C" void convolution2dRowsGPU(
 ////////////////////////////////////////////////////////////////////////////////
 // Column convolution filter
 ////////////////////////////////////////////////////////////////////////////////
-#define   COLUMNS_BLOCKDIM_X 16
-#define   COLUMNS_BLOCKDIM_Y 16
-#define COLUMNS_RESULT_STEPS 8
-#define   COLUMNS_HALO_STEPS 1
-
 __global__ void convolution2dColumnsKernel(
     float *d_Dst,
     float *d_Src,
@@ -425,11 +430,6 @@ extern "C" void convolution3dColumnsGPU(
     );
     getLastCudaError("convolution3dColumnsKernel() execution failed\n");
 }
-
-#define   DEPTH_BLOCKDIM_X 16
-#define   DEPTH_BLOCKDIM_Z 16
-#define DEPTH_RESULT_STEPS 8
-#define   DEPTH_HALO_STEPS 1
 
 __global__ void convolution3dDepthKernel(
     float *d_Dst,
