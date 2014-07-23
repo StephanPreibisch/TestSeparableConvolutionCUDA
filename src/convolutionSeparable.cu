@@ -473,7 +473,7 @@ __global__ void convolution3dDepthKernel(
 
     for (int i = DEPTH_HALO_STEPS + DEPTH_RESULT_STEPS; i < DEPTH_HALO_STEPS + DEPTH_RESULT_STEPS + DEPTH_HALO_STEPS; i++)
     {
-        s_Data[threadIdx.x][threadIdx.y + i * DEPTH_BLOCKDIM_Z]= (imageD - baseZ > i * DEPTH_BLOCKDIM_Z) ? d_Src[i * DEPTH_BLOCKDIM_Z * pitchX * pitchY] : 0;
+        s_Data[threadIdx.x][threadIdx.z + i * DEPTH_BLOCKDIM_Z]= (imageD - baseZ > i * DEPTH_BLOCKDIM_Z) ? d_Src[i * DEPTH_BLOCKDIM_Z * pitchX * pitchY] : 0;
     }
 
     //Compute and store results
