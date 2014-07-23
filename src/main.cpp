@@ -177,9 +177,9 @@ void test3d()
     *d_Output,
     *d_Buffer;
 
-    const int imageW = 64;
-    const int imageH = 64;
-    const int imageD = 64;
+    const int imageW = 128;
+    const int imageH = 128;
+    const int imageD = 128;
     const int iterations = 16;
 
     printf("Image Width x Height x Depth = %i x %ix %i\n\n", imageW, imageH, imageD );
@@ -212,6 +212,7 @@ void test3d()
     checkCudaErrors(cudaMemcpy(d_Input, h_Input, imageW * imageH * imageD * sizeof(float), cudaMemcpyHostToDevice));
 
     printf("Running GPU convolution3d (%u identical iterations)...\n\n", iterations);
+    checkCudaErrors(cudaDeviceSynchronize());
 
     for (int i = -1; i < iterations; i++)
     {
@@ -224,7 +225,7 @@ void test3d()
         }
 
         convolution3dRowsGPU(
-            d_Buffer,
+        	d_Output,
             d_Input,
             imageW,
             imageH,
@@ -232,8 +233,8 @@ void test3d()
         );
         /*
         convolution3dColumnsGPU(
-            d_Output,
             d_Buffer,
+            d_Output,
             imageW,
             imageH,
             imageD
