@@ -201,6 +201,9 @@ void test3d()
         h_Input[i] = (float)(rand() % 16);
     }
 
+    const int location = 100 + 100*imageW + 100*imageW*imageH;
+    //h_Input[ location ] = 1;
+
     sdkCreateTimer(&hTimer);
 
     printf("Allocating and initializing CUDA arrays...\n");
@@ -231,7 +234,7 @@ void test3d()
             imageH,
             imageD
         );
-        /*
+
         convolution3dColumnsGPU(
             d_Buffer,
             d_Output,
@@ -246,7 +249,7 @@ void test3d()
             imageW,
             imageH,
             imageD
-        );*/
+        );
     }
 
     checkCudaErrors(cudaDeviceSynchronize());
@@ -256,7 +259,7 @@ void test3d()
            (1.0e-6 * (double)(imageW * imageH * imageD)/ gpuTime), gpuTime, (imageW * imageH * imageD), 1, 0);
 
     printf("\nReading back GPU results...\n\n");
-    checkCudaErrors(cudaMemcpy(h_OutputGPU, d_Output, imageW * imageH * sizeof(float), cudaMemcpyDeviceToHost));
+    checkCudaErrors(cudaMemcpy(h_OutputGPU, d_Output, imageW * imageH * imageD * sizeof(float), cudaMemcpyDeviceToHost));
 
     printf("Checking the results...\n");
     printf(" ...running convolution3dRowCPU()\n");
@@ -291,6 +294,9 @@ void test3d()
         imageD,
         KERNEL_RADIUS
     );
+
+    for ( int i = -KERNEL_RADIUS; i <= KERNEL_RADIUS; ++i )
+    	printf("%i:Kernel=%.4f, CPU=%.4f, GPU=%.4f\n", i, h_Kernel[ i + KERNEL_RADIUS ], h_OutputCPU[ location + i], h_OutputGPU[ location + i]);
 
     printf(" ...comparing the results\n");
     double sum = 0, delta = 0;
