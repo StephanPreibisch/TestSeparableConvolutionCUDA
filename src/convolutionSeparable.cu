@@ -155,7 +155,7 @@ extern "C" void convolution2dRowsGPU(
 // Column convolution filter
 ////////////////////////////////////////////////////////////////////////////////
 #define   COLUMNS_BLOCKDIM_X 16
-#define   COLUMNS_BLOCKDIM_Y 8
+#define   COLUMNS_BLOCKDIM_Y 16
 #define COLUMNS_RESULT_STEPS 8
 #define   COLUMNS_HALO_STEPS 1
 
@@ -427,7 +427,7 @@ extern "C" void convolution3dColumnsGPU(
 }
 
 #define   DEPTH_BLOCKDIM_X 16
-#define   DEPTH_BLOCKDIM_Z 8
+#define   DEPTH_BLOCKDIM_Z 16
 #define DEPTH_RESULT_STEPS 8
 #define   DEPTH_HALO_STEPS 1
 
