@@ -23,13 +23,9 @@
 
 #include "convolutionSeparable_common.h"
 
-////////////////////////////////////////////////////////////////////////////////
-// Main program
-////////////////////////////////////////////////////////////////////////////////
-int main(int argc, char **argv)
+void test2d()
 {
-    // start logs
-    printf("[%s] - Starting...\n", argv[0]);
+    StopWatchInterface *hTimer = NULL;
 
     float
     *h_Kernel,
@@ -42,7 +38,6 @@ int main(int argc, char **argv)
     *d_Input,
     *d_Output,
     *d_Buffer;
-
 
     const int imageW = 3072;
     const int imageH = 3072;
@@ -66,11 +61,6 @@ int main(int argc, char **argv)
     {
         h_Input[i] = (float)(rand() % 16);
     }
-
-    StopWatchInterface *hTimer = NULL;
-
-    //Use command-line specified CUDA device, otherwise use device with highest Gflops/s
-    findCudaDevice(argc, (const char **)argv);
 
     sdkCreateTimer(&hTimer);
 
@@ -164,13 +154,29 @@ int main(int argc, char **argv)
 
     sdkDeleteTimer(&hTimer);
 
-    cudaDeviceReset();
-
     if (L2norm > 1e-6)
     {
         printf("Test failed!\n");
         exit(EXIT_FAILURE);
     }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Main program
+////////////////////////////////////////////////////////////////////////////////
+int main(int argc, char **argv)
+{
+    // start logs
+    printf("[%s] - Starting (2d)...\n", argv[0]);
+
+
+    //Use command-line specified CUDA device, otherwise use device with highest Gflops/s
+    findCudaDevice(argc, (const char **)argv);
+
+    test2d();
+
+    cudaDeviceReset();
+
 
     printf("Test passed\n");
     exit(EXIT_SUCCESS);
