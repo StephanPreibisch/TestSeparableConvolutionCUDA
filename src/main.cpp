@@ -230,7 +230,7 @@ void test3d()
             imageH,
             imageD
         );
-
+        /*
         convolution3dColumnsGPU(
             d_Output,
             d_Buffer,
@@ -245,7 +245,7 @@ void test3d()
             imageW,
             imageH,
             imageD
-        );
+        );*/
     }
 
     checkCudaErrors(cudaDeviceSynchronize());
@@ -260,7 +260,7 @@ void test3d()
     printf("Checking the results...\n");
     printf(" ...running convolution3dRowCPU()\n");
     convolution3dRowCPU(
-        h_Buffer,
+    	h_OutputCPU,
         h_Input,
         h_Kernel,
         imageW,
@@ -271,8 +271,8 @@ void test3d()
 
     printf(" ...running convolution3dColumnCPU()\n");
     convolution3dColumnCPU(
+    	h_Buffer,
         h_OutputCPU,
-        h_Buffer,
         h_Kernel,
         imageW,
         imageH,
