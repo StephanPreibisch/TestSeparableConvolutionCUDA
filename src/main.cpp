@@ -177,9 +177,9 @@ void test3d()
     *d_Output,
     *d_Buffer;
 
-    const int imageW = 128;
-    const int imageH = 128;
-    const int imageD = 128;
+    const int imageW = 512;
+    const int imageH = 512;
+    const int imageD = 512;
     const int iterations = 16;
 
     printf("Image Width x Height x Depth = %i x %ix %i\n\n", imageW, imageH, imageD );
@@ -201,7 +201,7 @@ void test3d()
         h_Input[i] = (float)(rand() % 16);
     }
 
-    const int location = 100 + 100*imageW + 100*imageW*imageH;
+    //const int location = 0 + 0*imageW + 58*imageW*imageH;
     //h_Input[ location ] = 1;
 
     sdkCreateTimer(&hTimer);
@@ -242,14 +242,14 @@ void test3d()
             imageH,
             imageD
         );
-        /*
+
         convolution3dDepthGPU(
             d_Output,
             d_Buffer,
             imageW,
             imageH,
             imageD
-        );*/
+        );
     }
 
     checkCudaErrors(cudaDeviceSynchronize());
@@ -283,7 +283,7 @@ void test3d()
         imageD,
         KERNEL_RADIUS
     );
-    /*
+
     printf(" ...running convolution3dDepthCPU()\n");
     convolution3dDepthCPU(
         h_OutputCPU,
@@ -293,10 +293,10 @@ void test3d()
         imageH,
         imageD,
         KERNEL_RADIUS
-    );*/
+    );
 
-    for ( int i = -KERNEL_RADIUS; i <= KERNEL_RADIUS; ++i )
-    	printf("%i:Kernel=%.4f, CPU=%.4f, GPU=%.4f\n", i, h_Kernel[ i + KERNEL_RADIUS ], h_OutputCPU[ location + i], h_OutputGPU[ location + i]);
+    //for ( int i = -KERNEL_RADIUS; i <= KERNEL_RADIUS; ++i )
+    //	printf("%i:Kernel=%.4f, CPU=%.4f, GPU=%.4f\n", i, h_Kernel[ i + KERNEL_RADIUS ], h_OutputCPU[ location + i*imageW*imageH], h_OutputGPU[ location + i*imageW*imageH]);
 
     printf(" ...comparing the results\n");
     double sum = 0, delta = 0;
