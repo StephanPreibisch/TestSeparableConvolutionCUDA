@@ -335,10 +335,10 @@ int main(int argc, char **argv)
     //Use command-line specified CUDA device, otherwise use device with highest Gflops/s
     findCudaDevice(argc, (const char **)argv);
 
-    test2d();
+    //test2d();
+    test3d();
 
     cudaDeviceReset();
-
 
     printf("Test passed\n");
     exit(EXIT_SUCCESS);
