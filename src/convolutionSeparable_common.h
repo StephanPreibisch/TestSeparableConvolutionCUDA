@@ -76,6 +76,8 @@ extern "C" void convolution3dDepthCPU(
 ////////////////////////////////////////////////////////////////////////////////
 // GPU convolution
 ////////////////////////////////////////////////////////////////////////////////
+
+// 2d
 extern "C" void setConvolutionKernel(float *h_Kernel);
 
 extern "C" void convolution2dRowsGPU(
@@ -92,6 +94,30 @@ extern "C" void convolution2dColumnsGPU(
     int imageH
 );
 
+// 3d
 
+extern "C" void convolution3dRowsGPU(
+    float *d_Dst,
+    float *d_Src,
+    int imageW,
+    int imageH,
+    int imageD
+);
+
+extern "C" void convolution3dColumnsGPU(
+    float *d_Dst,
+    float *d_Src,
+    int imageW,
+    int imageH,
+    int imageD
+);
+
+extern "C" void convolution3dDepthGPU(
+    float *d_Dst,
+    float *d_Src,
+    int imageW,
+    int imageH,
+    int imageD
+);
 
 #endif
