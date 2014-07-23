@@ -334,7 +334,7 @@ extern "C" void convolution3dRowsGPU(
         imageW,
         imageH
     );
-    getLastCudaError("convolutionRowsKernel() execution failed\n");
+    getLastCudaError("convolution3dRowsKernel() execution failed\n");
 }
 
 __global__ void convolution3dColumnsKernel(
@@ -423,5 +423,101 @@ extern "C" void convolution3dColumnsGPU(
         imageW,
         imageH
     );
-    getLastCudaError("convolutionColumnsKernel() execution failed\n");
+    getLastCudaError("convolution3dColumnsKernel() execution failed\n");
 }
+
+#define   DEPTH_BLOCKDIM_X 16
+#define   DEPTH_BLOCKDIM_Z 8
+#define DEPTH_RESULT_STEPS 8
+#define   DEPTH_HALO_STEPS 1
+
+__global__ void convolution3dDepthKernel(
+    float *d_Dst,
+    float *d_Src,
+    int imageW,
+    int imageH,
+    int imageD,
+    int pitchX,
+    int pitchY
+)
+{
+	// here it is [x][z], we leave out y as it has a size of 1
+    __shared__ float s_Data[DEPTH_BLOCKDIM_X][(DEPTH_RESULT_STEPS + 2 * DEPTH_HALO_STEPS) * DEPTH_BLOCKDIM_Z + 1];
+
+    //Offset to the upper halo edge
+    const int baseX = blockIdx.x * DEPTH_BLOCKDIM_X + threadIdx.x;
+    const int baseY = blockIdx.y + threadIdx.y;
+    const int baseZ = (blockIdx.z * DEPTH_RESULT_STEPS - DEPTH_HALO_STEPS) * DEPTH_BLOCKDIM_Z + threadIdx.z;
+
+    d_Src += baseZ * pitchY * pitchX + baseY * pitchX + baseX;
+    d_Dst += baseZ * pitchY * pitchX + baseY * pitchX + baseX;
+
+    //Main data
+#pragma unroll
+
+    for (int i = DEPTH_HALO_STEPS; i < DEPTH_HALO_STEPS + DEPTH_RESULT_STEPS; i++)
+    {
+        s_Data[threadIdx.x][threadIdx.z + i * DEPTH_BLOCKDIM_Z] = d_Src[i * DEPTH_BLOCKDIM_Z * pitchX * pitchY];
+    }
+
+    //Upper halo
+#pragma unroll
+
+    for (int i = 0; i < DEPTH_HALO_STEPS; i++)
+    {
+        s_Data[threadIdx.x][threadIdx.z + i * DEPTH_BLOCKDIM_Z] = (baseZ >= -i * DEPTH_BLOCKDIM_Z) ? d_Src[i * DEPTH_BLOCKDIM_Z * pitchX * pitchY] : 0;
+    }
+
+    //Lower halo
+#pragma unroll
+
+    for (int i = DEPTH_HALO_STEPS + DEPTH_RESULT_STEPS; i < DEPTH_HALO_STEPS + DEPTH_RESULT_STEPS + DEPTH_HALO_STEPS; i++)
+    {
+        s_Data[threadIdx.x][threadIdx.y + i * DEPTH_BLOCKDIM_Z]= (imageD - baseZ > i * DEPTH_BLOCKDIM_Z) ? d_Src[i * DEPTH_BLOCKDIM_Z * pitchX * pitchY] : 0;
+    }
+
+    //Compute and store results
+    __syncthreads();
+#pragma unroll
+
+    for (int i = DEPTH_HALO_STEPS; i < DEPTH_HALO_STEPS + DEPTH_RESULT_STEPS; i++)
+    {
+        float sum = 0;
+#pragma unroll
+
+        for (int j = -KERNEL_RADIUS; j <= KERNEL_RADIUS; j++)
+        {
+            sum += c_Kernel[KERNEL_RADIUS - j] * s_Data[threadIdx.x][threadIdx.z + i * DEPTH_BLOCKDIM_Z + j];
+        }
+
+        d_Dst[i * DEPTH_BLOCKDIM_Z * pitchX * pitchY] = sum;
+    }
+}
+
+extern "C" void convolution3dDepthGPU(
+    float *d_Dst,
+    float *d_Src,
+    int imageW,
+    int imageH,
+    int imageD
+)
+{
+    assert(DEPTH_BLOCKDIM_Z * DEPTH_HALO_STEPS >= KERNEL_RADIUS);
+    assert(imageW % DEPTH_BLOCKDIM_X == 0);
+    assert(imageD % (DEPTH_RESULT_STEPS * DEPTH_BLOCKDIM_Z) == 0);
+
+    dim3 blocks(imageW / DEPTH_BLOCKDIM_X, imageH, imageD/ (DEPTH_RESULT_STEPS * DEPTH_BLOCKDIM_Z) );
+    dim3 threads(DEPTH_BLOCKDIM_X, 1, DEPTH_BLOCKDIM_Z);
+
+    convolution3dDepthKernel<<<blocks, threads>>>(
+        d_Dst,
+        d_Src,
+        imageW,
+        imageH,
+        imageD,
+        imageW,
+        imageH
+    );
+    getLastCudaError("convolution3dDepthKernel() execution failed\n");
+}
+
