@@ -259,7 +259,7 @@ __global__ void convolution3dRowsKernel(
 
     const int baseX = (blockIdx.x * ROWS_RESULT_STEPS - ROWS_HALO_STEPS) * ROWS_BLOCKDIM_X + threadIdx.x;
     const int baseY = blockIdx.y * ROWS_BLOCKDIM_Y + threadIdx.y;
-    const int baseZ = blockIdx.z + threadIdx.z;
+    const int baseZ = blockIdx.z;
 
     // set the input and output arrays to the right offset (actually the output is not at the right offset, but this is corrected later)
     d_Src += baseZ * pitchY * pitchX + baseY * pitchX + baseX;
@@ -323,7 +323,7 @@ extern "C" void convolution3dRowsGPU(
     assert(imageH % ROWS_BLOCKDIM_Y == 0);
 
     dim3 blocks(imageW / (ROWS_RESULT_STEPS * ROWS_BLOCKDIM_X), imageH / ROWS_BLOCKDIM_Y, imageD);
-    dim3 threads(ROWS_BLOCKDIM_X, ROWS_BLOCKDIM_Y, 1);
+    dim3 threads(ROWS_BLOCKDIM_X, ROWS_BLOCKDIM_Y);
 
     convolution3dRowsKernel<<<blocks, threads>>>(
         d_Dst,
