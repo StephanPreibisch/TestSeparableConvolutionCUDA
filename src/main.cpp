@@ -177,9 +177,9 @@ void test3d()
     *d_Output,
     *d_Buffer;
 
-    const int imageW = 512;
-    const int imageH = 512;
-    const int imageD = 512;
+    const int imageW = 64;
+    const int imageH = 64;
+    const int imageD = 64;
     const int iterations = 16;
 
     printf("Image Width x Height x Depth = %i x %ix %i\n\n", imageW, imageH, imageD );
